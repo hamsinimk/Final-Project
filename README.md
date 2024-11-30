@@ -71,4 +71,4 @@ Checking how many distinct permutations of faces rolled in the game object
 myanalyze.perm_count()
 ```
 
-API Description
+## API Description
