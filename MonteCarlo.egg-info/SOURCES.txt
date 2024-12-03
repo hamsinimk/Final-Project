@@ -1,0 +1,9 @@
+LICENSE
+setup.py
+MonteCarlo.egg-info/PKG-INFO
+MonteCarlo.egg-info/SOURCES.txt
+MonteCarlo.egg-info/dependency_links.txt
+MonteCarlo.egg-info/top_level.txt
+montecarlo/__init__.py
+montecarlo/diegame1.py
+montecarlo/diegame1_test.py

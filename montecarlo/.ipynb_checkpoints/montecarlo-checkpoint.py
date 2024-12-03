@@ -24,11 +24,11 @@ class DieClass():
         """
         if not isinstance(faces, np.ndarray):
             raise TypeError("you have to pass a numpy array!")
-        if not all([isinstance(f, (np.int32, np.int64, np.str_)) for f in faces]):
+        if not all([isinstance(f, (np.int32, np.int64, np.str_, str)) for f in faces]):
             raise TypeError("you have to pass strings or integers!")
         if len(np.unique(faces)) != len(faces):
             raise ValueError("array should have distinct values!")
-        self.die_df = pd.DataFrame({
+        self._die_df = pd.DataFrame({
             'faces': faces, 
             'weights': np.ones(len(faces), dtype=float)}
         ).set_index(['faces'])
@@ -48,11 +48,11 @@ class DieClass():
         it is a numeric or castable as a numeric and raises an error if not. 
         
         """
-        if face_val not in self.die_df.index:
+        if face_val not in self._die_df.index:
             raise IndexError("this is not a valid face value!")
         if not str(new_weight).isnumeric():
             raise TypeError("new weight is not numeric")
-        self.die_df.loc[face_val, 'weights'] = new_weight
+        self._die_df.loc[face_val, 'weights'] = new_weight
         
     def roll_die(self, num_rolls=1):
         """
@@ -64,12 +64,12 @@ class DieClass():
         num_rolls: Any number of rolls can be specified here to roll the die. The default value for the number the rolls is 1, so if no
         value is passed, the die will be rolled once. 
         
-        Return Values: roll_die returns a list of the faces that were rolled depending on the number of rolls specified by the user. 
-        The method uses random sampling with replacement to do so and takes the weights that were specified by the user previously into
-        account. This list is not 
+        Return Values: roll_die returns a list of the faces that were rolled depending on the number of rolls specified 
+        by the user. The method uses random sampling with replacement to do so and takes the weights that were 
+        specified by the user previously into account. This list is not internally saved. 
         """
-        self.die_df['weights'] = self.die_df['weights']/np.sum(self.die_df['weights'])
-        return list(np.random.choice(self.die_df.index, num_rolls, replace = True, p = self.die_df['weights']))
+        self._die_df['weights'] = self._die_df['weights']/np.sum(self._die_df['weights'])
+        return list(np.random.choice(self._die_df.index, num_rolls, replace = True, p = self._die_df['weights']))
         
     def die_state(self):
         """
@@ -81,12 +81,12 @@ class DieClass():
         Return Values: The die_state method will return the private dataframe containing the faces of the die and 
         the associated weights. 
         """
-        return self.die_df
+        return self._die_df
 
 class GameClass():
     """
-    General definition: The GameClass is used to simulate a game in which one or more similar die are rolled. The die are "similar" in that if multiple
-    die objects are passed, they must have the number of sides and associated face values. But, if the user chooses to do so,
+    General definition: The GameClass is used to simulate a game in which one or more similar die are rolled. The die are "similar" in that
+    if multiple die objects are passed, they must have the number of sides and associated face values. But, if the user chooses to do so,
     the weight values of the faces can be different between the die objects. 
     """
     def __init__(self, die_obj):
@@ -114,10 +114,10 @@ class GameClass():
         roll_results = []
         for die in self.die_obj:
             roll_results.append(die.roll_die(num_rolls))
-        self.play_df = pd.DataFrame(roll_results).T
-        self.play_df.columns = [f'Die {i}' for i in range(len(self.die_obj))] 
-        self.play_df['roll number'] = range(1, num_rolls+1)
-        self.play_df = self.play_df.set_index(['roll number'])
+        self._play_df = pd.DataFrame(roll_results).T
+        self._play_df.columns = [f'Die {i}' for i in range(len(self.die_obj))] 
+        self._play_df['roll number'] = range(1, num_rolls+1)
+        self._play_df = self._play_df.set_index(['roll number'])
     def recent_play(self,format_play='wide'):
         """
         Purpose: The purpose of the recent_play method is to return the results of the game to the user based on the format
@@ -134,13 +134,13 @@ class GameClass():
         
         """
         if format_play == 'narrow':
-            play_df_reset = self.play_df.reset_index()
-            narrow_df = pd.melt(play_df_reset, id_vars = 'roll number', value_vars = self.play_df.columns,
+            play_df_reset = self._play_df.reset_index()
+            narrow_df = pd.melt(play_df_reset, id_vars = 'roll number', value_vars = self._play_df.columns,
                                var_name = 'Die', value_name = 'roll result')
             narrow_df = narrow_df.set_index(['roll number', 'Die'])
             return narrow_df
         elif format_play == 'wide':
-            return self.play_df
+            return self._play_df
         else:
             raise ValueError('the only table format options are either wide (default) or narrow!')                                                        
 class AnalyzeClass():
@@ -161,7 +161,7 @@ class AnalyzeClass():
         if not isinstance(game_obj, GameClass):
             raise ValueError('Passed value is not a Game object!')
         self.game_obj = game_obj
-        self.play_df = self.game_obj.play_df
+        self.play_df = self.game_obj._play_df
     def check_jackpot(self):
         """
         Purpose:
