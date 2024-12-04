@@ -1,3 +1,105 @@
+## Project: Monte Carlo Simulator
+# Name: Hamsini Muralikrishnan
+
+## Synopsis/ Code Examples
+
+Installing the package
+
+```python
+pip install -e.
+```
+
+
+Importing the package/code
+
+```python
+import montecarlo
+```
+
+Instantiating Die Object/ calling DieClass 
+
+```python
+mydie = montecarlo.DieClass(np.array([1,2,3]))
+```
+Changing the face value of 2 to be weight 5 times more than the other faces
+
+```python
+mydie.change_weight(2, 5)
+```
+
+
+Rolling the dice 5 times - this will return a list of the results
+
+```python
+mydie.num_rolls(5)
+```
+
+Returning the state of the die in a dataframe which contains the face values as the index and the weights as the column
+
+```python
+mydie.die_state()
+
+```
+
+
+Instantiating Game Object/ calling GameClass
+
+```python
+mydie = [DieClass(np.array([1,2,3])), DieClass(np.array([1,2,3])), DieClass(np.array([1,2,3]))]
+mygame = montecarlo.GameClass(mydie)                            
+```
+
+Playing the game with all the die passed in the die object (mydie) - rolling the die 10 times
+
+```python
+mygame.play(10)
+```
+
+Display the results of the game that was just played in a wide formatted dataframe (default)
+
+```python
+mygame.recent_play()
+```
+
+Display the results of the game that was just played in a narrow formatted dataframe
+
+```python
+mygame.recent_play('narrow')
+```
+
+
+Instantiating Analyze Object/ calling AnalyzeClass 
+
+As a note: the play method has to be called on the mygame object as shown
+above to have results to analyze using the AnalyzeClass
+
+```python
+myanalyze = montecarlo.AnalyzeClass(mygame)
+```
+
+Checking how many games/events resulted in a jackpot
+```python
+myanalyze.check_jackpot()
+```
+
+Checking how many of each face value was rolled in each game
+```python
+myanalyze.face_counts()
+```
+
+Checking how many distinct combinations of faces were rolled across the game object
+```python
+myanalyze.combo_count()
+```
+
+Checking how many distinct permutations of faces were rolled across the game object
+```python
+myanalyze.perm_count()
+```
+
+## API Description
+
+```python
 import numpy as np
 import pandas as pd
 
@@ -282,3 +384,4 @@ class AnalyzeClass():
         perm_count_df = self.play_df.apply(lambda row: tuple(row), axis = 1).value_counts().to_frame('n')
         perm_count_df.index = pd.MultiIndex.from_tuples(perm_count_df.index)
         return perm_count_df
+```

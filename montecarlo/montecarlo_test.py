@@ -38,29 +38,29 @@ class DieGameAnalyzeTestSuite(unittest.TestCase):
     def test_06_play(self):
         mydie = [DieClass(np.array([1,2,3,4,5,6])), DieClass(np.array([1,2,3,4,5,6]))]
         mygame = GameClass(mydie)
-        mygame.play(3)
+        mygame.play(10)
         self.assertTrue(isinstance(mygame._play_df, pd.DataFrame))
     
     def test_07_recent_play(self):
         mydie = [DieClass(np.array([1,2,3,4,5,6])), DieClass(np.array([1,2,3,4,5,6]))]
         mygame = GameClass(mydie)
-        mygame.play(3)
+        mygame.play(10)
         self.assertTrue(isinstance(mygame.recent_play('narrow').index, pd.MultiIndex))
         self.assertFalse(isinstance(mygame.recent_play().index, pd.MultiIndex))
     
     def test_08_init(self):
         mydie = [DieClass(np.array([1,2,3,4,5,6])), DieClass(np.array([1,2,3,4,5,6]))]
         mygame = GameClass(mydie)
-        mygame.play(3)
+        mygame.play(10)
         myanalyze = AnalyzeClass(mygame)
         self.assertTrue(isinstance(myanalyze, AnalyzeClass))
     
     def test_09_jackpot(self):
         mydie = [DieClass(np.array([1])), DieClass(np.array([1]))]
         mygame = GameClass(mydie)
-        mygame.play(3)
+        mygame.play(10)
         myanalyze = AnalyzeClass(mygame)
-        expected = 3
+        expected = 10
         actual = myanalyze.check_jackpot()
         self.assertTrue(isinstance(actual, int))
         self.assertEqual(actual,expected)
@@ -68,21 +68,21 @@ class DieGameAnalyzeTestSuite(unittest.TestCase):
     def test_10_face_counts(self):
         mydie = [DieClass(np.array([1,2,3,4,5,6])), DieClass(np.array([1,2,3,4,5,6]))]
         mygame = GameClass(mydie)
-        mygame.play(3)
+        mygame.play(10)
         myanalyze = AnalyzeClass(mygame)
         self.assertFalse(isinstance(myanalyze.face_counts().index, pd.MultiIndex))
     
     def test_11_combo_count(self):
         mydie = [DieClass(np.array([1,2,3,4,5,6])), DieClass(np.array([1,2,3,4,5,6]))]
         mygame = GameClass(mydie)
-        mygame.play(3)
+        mygame.play(10)
         myanalyze = AnalyzeClass(mygame)
         self.assertTrue(isinstance(myanalyze.combo_count().index, pd.MultiIndex))
     
     def test_12_perm_count(self):
         mydie = [DieClass(np.array([1,2,3,4,5,6])), DieClass(np.array([1,2,3,4,5,6]))]
         mygame = GameClass(mydie)
-        mygame.play(3)
+        mygame.play(10)
         myanalyze = AnalyzeClass(mygame)
         self.assertTrue(isinstance(myanalyze.perm_count().index, pd.MultiIndex))
         
